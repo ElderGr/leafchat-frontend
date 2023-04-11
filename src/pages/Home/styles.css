@@ -1,0 +1,19 @@
+.users-container{
+  display: flex;
+  justify-content: center;
+
+}
+
+.users-container>div{
+  width: 60%;
+}
+
+.users-content{
+  display: flex;
+  flex-direction: column;
+}
+
+.users-content>div{
+  margin-top: 25px;
+
+}

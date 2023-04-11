@@ -1,0 +1,8 @@
+.classe>div{
+  justify-content: space-between;
+}
+
+.content-background{
+  height: 100%;
+  background: rgb(245, 245, 245);
+}
