@@ -120,17 +120,13 @@ export default function MiniDrawer() {
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
+    setOpen(!open);
   };
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      {/* <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -148,11 +144,11 @@ export default function MiniDrawer() {
             Leafchat
           </Typography>
         </Toolbar>
-      </AppBar>
+      </AppBar> */}
       <Drawer className="classe" variant="permanent" open={open}>
         <div>
           <DrawerHeader>
-            <IconButton onClick={handleDrawerClose}>
+            <IconButton onClick={handleDrawerOpen}>
               {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
             </IconButton>
           </DrawerHeader>

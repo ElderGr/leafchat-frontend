@@ -1,19 +1,19 @@
-.users-container{
+.users-container>div:nth-child(1){
+  padding: 0 10px;
   display: flex;
-  justify-content: center;
 
+  justify-content: space-between;
 }
 
 .users-container>div{
-  width: 60%;
+  width: 100%;
 }
 
 .users-content{
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
 }
 
 .users-content>div{
-  margin-top: 25px;
-
+  margin: 10px;
 }

@@ -36,6 +36,7 @@ function Input({
         ref={inputRef}
         variant={variant}
         defaultValue={defaultValue}
+        {...props}
       />
     </Container>
   );
