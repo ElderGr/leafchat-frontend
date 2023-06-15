@@ -1,0 +1,45 @@
+.logo{
+    animation: fade 1s;
+    padding-top: 20px;
+}
+
+.signup-container{
+    background: #fff !important;
+    border-radius: 5px;
+    animation: fade 1.5s;
+    margin: 0 auto;
+    max-width: 400px;
+}
+
+.signup-container form>.md-form.md-outline{
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+} 
+
+
+.signup-container form>div>h1{
+    color: #5C5C5C;
+    text-align: center;
+    font-size: 17pt;
+    display: inline;
+}
+
+.signup-container form button{
+    margin-top: 10%;
+}
+
+
+.signup-container form div svg{
+    color: rgb(69, 214, 73);
+    width: 20px;
+    height: 20px;
+    transition: ease 0.3s;
+    cursor: pointer;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+
+.signup-container form div svg:hover{
+    color: rgb(25, 160, 30);
+}
