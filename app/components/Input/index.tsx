@@ -1,12 +1,26 @@
-import { w, W } from 'windstitch';
+import { 
+    Form, 
+    Input as AntdInput,
+    InputProps,
+    FormItemProps
+} from 'antd'
 
-export const Input = w.input(
-  `
-    shadow appearance-none border 
-    rounded w-full py-2 px-3 
-    text-gray-700 leading-tight 
-    focus:outline-none 
-    focus:shadow-outline
-    `
-);
-export type InputProps = W.Infer<typeof Input>;
+type Input = {
+    formItemProps: FormItemProps;
+    inputProps: InputProps
+}
+
+export function Input({
+    formItemProps,
+    inputProps
+}: Input){
+    return (
+    <Form.Item
+        {...formItemProps}
+      >
+        <AntdInput
+            {...inputProps}
+        />
+      </Form.Item>
+    )
+}
