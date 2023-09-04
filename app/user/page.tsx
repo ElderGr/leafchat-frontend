@@ -1,8 +1,10 @@
+import Private from "../components/Layout/Private";
+
 export default function User() {
     return (
-      <main>
+      <Private>
         User
-      </main>
+      </Private>
     )
   }
   

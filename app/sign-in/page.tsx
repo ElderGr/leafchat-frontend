@@ -22,6 +22,7 @@ export default function SignUp() {
       password: values.password
     })
     .then(() => router.push('/feed'))
+    router.push('/feed')
   }
 
   return (

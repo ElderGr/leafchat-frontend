@@ -12,7 +12,7 @@
 
 body{
     font: 400 14px Roboto, sans-serif !important;
-    background: #8AC48C !important;
+    /* background: #8AC48C !important; */
     -webkit-font-smoothing: antialiased;
 
     height: 100vh;
