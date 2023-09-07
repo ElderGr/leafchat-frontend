@@ -6,8 +6,8 @@ import {
 } from 'antd'
 
 type Input = {
-    formItemProps: FormItemProps;
-    inputProps: InputProps
+    formItemProps?: FormItemProps;
+    inputProps?: InputProps
 }
 
 export function Input({
