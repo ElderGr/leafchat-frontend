@@ -18,8 +18,16 @@ export function AddUserModal(){
     };
     return (    
         <>
-            <Modal title="Adicionar usuário" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <AddUserForm />
+            <Modal 
+              title="Adicionar usuário" 
+              open={isModalOpen} 
+              onOk={handleOk} 
+              onCancel={handleCancel}
+              footer={[]}
+            >
+                <AddUserForm 
+                  closeModal={handleOk}
+                />
             </Modal>
             <Button 
                 type='primary' 

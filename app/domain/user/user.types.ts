@@ -9,4 +9,6 @@ export type User = BaseQuery & {
     password: string;
 }
 
+export type CreateUsersParams = Omit<User, 'id' | 'updated_at' | 'create_at'>
 
+export type CreateUserResponse = User

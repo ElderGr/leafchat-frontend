@@ -8,17 +8,18 @@ import {
 } from '@ant-design/icons';
 import { TableRowSelection } from "antd/es/table/interface";
 import { AddUserModal } from "./components/AddUserModal";
+import { useListUsers } from "../domain/user/user.hook";
 
 type DataType = Omit<User, 'password' | 'create_at' | 'updated_at'>
 
 const columns: ColumnsType<DataType> = [
   {
-    title: 'Avatar',
-    dataIndex: 'avatar_url',
-  },
-  {
     title: 'Nome',
     dataIndex: 'name',
+  },
+  {
+    title: 'Avatar',
+    dataIndex: 'avatar_url',
   },
   {
     title: 'Acessos',
@@ -49,17 +50,19 @@ const columns: ColumnsType<DataType> = [
   }
 ];
 
-const data: DataType[] = Array.from({length: 20}, (_, index) => {
-  return {
-    id: `${index}`,
-    avatar_url: 'Avatar url',
-    email: 'gabriel@email.com',
-    name: 'Gabriel', 
-    roles: '11',
-  }
-})
+// const data: DataType[] = Array.from({length: 20}, (_, index) => {
+//   return {
+//     id: `${index}`,
+//     avatar_url: 'Avatar url',
+//     email: 'gabriel@email.com',
+//     name: 'Gabriel', 
+//     roles: '11',
+//   }
+// })
 
 export default function User() {
+  const { data, isLoading } = useListUsers()
+
     const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
       console.log('params', pagination, filters, sorter, extra);
     };
@@ -87,7 +90,8 @@ export default function User() {
         <Table 
           columns={columns} 
           dataSource={data} 
-          onChange={onChange} 
+          onChange={onChange}
+          loading={isLoading}
           rowSelection={rowSelection}
           pagination={{
             pageSize: 10,

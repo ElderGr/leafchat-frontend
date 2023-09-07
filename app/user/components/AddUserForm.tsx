@@ -1,9 +1,39 @@
 import { Input } from "@/app/components";
-import { Form } from "antd";
+import { useCreateUsers } from "@/app/domain/user/user.hook";
+import { CreateUsersParams } from "@/app/domain/user/user.types";
+import { Button, Form, Select } from "antd";
 
-export function AddUserForm(){
+type AddUserForm = {
+    closeModal(): void
+}
+
+export function AddUserForm({
+    closeModal
+}: AddUserForm){
+    const createUser = useCreateUsers()
+
+    const handleSubmit = ({
+        avatar_url,
+        email,
+        name,
+        password,
+        roles,
+    }: CreateUsersParams) => {
+        createUser
+            .mutateAsync({
+                avatar_url,
+                email,
+                name,
+                password,
+                roles
+            })
+            .then(() => closeModal())
+    }
+
     return (
-        <Form>
+        <Form
+            onFinish={handleSubmit}
+        >
             <Input 
                 formItemProps={{
                     name: 'name',
@@ -22,22 +52,25 @@ export function AddUserForm(){
                     placeholder: 'Avatar'
                 }}
             />
-            <Input 
-                formItemProps={{
-                    name: 'roles',
-                    label: 'Roles'
-                }}
-                inputProps={{
-                    placeholder: 'roles'
-                }}
-            />
+            <Form.Item
+                name='roles'
+                label='Acesso'
+            >
+                <Select 
+                    options={[
+                        {label: 'Administrador', value: 'admin'},
+                        {label: 'Usuário', value: 'user'}
+                    ]}
+                />
+            </Form.Item>
             <Input 
                 formItemProps={{
                     name: 'email',
                     label: 'Email'
                 }}
                 inputProps={{
-                    placeholder: 'Email'
+                    placeholder: 'Email',
+                    type: 'email'
                 }}
             />
             <Input 
@@ -46,9 +79,17 @@ export function AddUserForm(){
                     label: 'Password'
                 }}
                 inputProps={{
-                    placeholder: 'Password'
+                    placeholder: 'Password',
+                    type: 'password'
                 }}
             />
+            <Button
+                htmlType="submit"
+                loading={createUser.isLoading}
+                type='primary'
+            >
+                Adicionar
+            </Button>
         </Form>
     )
 }
