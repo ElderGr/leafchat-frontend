@@ -7,66 +7,86 @@ import {
   MoreOutlined
 } from '@ant-design/icons';
 import { TableRowSelection } from "antd/es/table/interface";
-import { AddUserModal } from "./components/AddUserModal";
+import { UserModal } from "./components/User-Modal";
 import { useListUsers } from "../domain/user/user.hook";
+import UserProvider, { useUserContext } from "../context/users";
+import { DeleteUserModal } from "./components/delete-user-modal";
 
 type DataType = Omit<User, 'password' | 'create_at' | 'updated_at'>
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: 'Nome',
-    dataIndex: 'name',
-  },
-  {
-    title: 'Avatar',
-    dataIndex: 'avatar_url',
-  },
-  {
-    title: 'Acessos',
-    dataIndex: 'roles',
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-  },
-  {
-    title: '',
-    render: () => {
-      return (
-        <div>
-            <Dropdown menu={{ 
-              items: [
-                { key: '1', label: 'Editar'},
-                { key: '2', label: 'Excluir' },
-              ]
-             }}>
-              <a>
-                <MoreOutlined />
-              </a>
-            </Dropdown>
-        </div>
-      )
-    }
-  }
-];
+export default function UserContainer() {
+  return(
+    <Private>
+        <UserProvider>
+          <UserApp />
+        </UserProvider>
+    </Private>
+  )
+}
 
-// const data: DataType[] = Array.from({length: 20}, (_, index) => {
-//   return {
-//     id: `${index}`,
-//     avatar_url: 'Avatar url',
-//     email: 'gabriel@email.com',
-//     name: 'Gabriel', 
-//     roles: '11',
-//   }
-// })
 
-export default function User() {
-  const { data, isLoading } = useListUsers()
+function UserApp() {
+    const { data, isLoading } = useListUsers()
+
+    const { openUserForm, openDeleteUserForm } = useUserContext()
+
+    const columns: ColumnsType<DataType> = [
+      {
+        title: 'Nome',
+        dataIndex: 'name',
+      },
+      {
+        title: 'Avatar',
+        dataIndex: 'avatar_url',
+      },
+      {
+        title: 'Acessos',
+        dataIndex: 'roles',
+      },
+      {
+        title: 'Email',
+        dataIndex: 'email',
+      },
+      {
+        title: '',
+        render: (user) => {
+          return (
+            <div>
+                <Dropdown 
+                  menu={{ 
+                    items: [
+                      { 
+                        key: '1', 
+                        label: 'Editar',  
+                        onClick: () => {
+                          openUserForm(user)
+                        }
+                      },
+                      { 
+                        key: '2', 
+                        label: 'Excluir',  
+                        onClick: () => {
+                          openDeleteUserForm(user)
+                        }
+                      },
+                    ]
+                  }}
+                 >
+                  <a>
+                    <MoreOutlined />
+                  </a>
+                </Dropdown>
+            </div>
+          )
+        }
+      }
+    ];
+
 
     const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
       console.log('params', pagination, filters, sorter, extra);
     };
-    
+      
     const rowSelection: TableRowSelection<DataType> = {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -81,10 +101,19 @@ export default function User() {
 
 
     return (
-      <Private>
+      <>
         <Row justify='space-between'>
           <h2>Usuários</h2>
-          <AddUserModal />
+          <Button 
+                type='primary' 
+                htmlType='button'
+                onClick={() => openUserForm(null)}
+                size="large"
+            >
+              Adicionar
+            </Button>
+          <UserModal />
+          <DeleteUserModal />
         </Row>
         <Divider />
         <Table 
@@ -98,7 +127,7 @@ export default function User() {
             current: 1
           }}
         />
-      </Private>
+      </>
     )
   }
   

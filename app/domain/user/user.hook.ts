@@ -16,7 +16,29 @@ export function useCreateUsers(){
         },
         onError(err) {
             notification.error({
-                message: 'Erro ao realizar o login'
+                message: 'Erro ao criar o usuário'
+            })
+        }
+    })
+
+    return mutation
+}
+
+export function useEditUsers(){
+    const queryClient = useQueryClient();
+    const notification = useNotification()
+
+    const mutation = useMutation(userServices.edit, {
+        onSuccess(res: any) {
+            notification.success({
+                message: 'Usuário atualizado com sucesso'
+            })
+            
+            queryClient.invalidateQueries('users')
+        },
+        onError(err) {
+            notification.error({
+                message: 'Erro ao atualizar o usuário'
             })
         }
     })
@@ -28,4 +50,26 @@ export function useListUsers(params?: any){
     const query = useQuery(['users', params], () => userServices.findMany(params))
     
     return query
+}
+
+export function useDeleteUsers(){
+    const queryClient = useQueryClient();
+    const notification = useNotification()
+
+    const mutation = useMutation(userServices.remove, {
+        onSuccess(res: any) {
+            notification.success({
+                message: 'Usuário removido com sucesso'
+            })
+            
+            queryClient.invalidateQueries('users')
+        },
+        onError(err) {
+            notification.error({
+                message: 'Erro ao remover o usuário'
+            })
+        }
+    })
+
+    return mutation
 }

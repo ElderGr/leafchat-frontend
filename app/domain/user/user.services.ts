@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import axiosInstance, { SERVICE_BASE_URL } from '@/app/config/axios';
-import { CreateUserResponse, CreateUsersParams, User } from './user.types';
+import { CreateUserResponse, CreateUsersParams, EditUsersParams } from './user.types';
 
 const URL_CONTROLER = `${SERVICE_BASE_URL}/users`;
 
@@ -31,6 +31,33 @@ const usersService = {
         {
             params
         }
+    )
+
+    return result.data
+  },
+  async edit({
+    id,
+    avatar_url,
+    email,
+    name,
+    password,
+    roles
+  }: EditUsersParams) {
+    const result = await axiosInstance.put<CreateUserResponse>(
+      `${URL_CONTROLER}/${id}`,
+      {
+        avatar_url,
+        email,
+        name,
+        password,
+        roles
+      }
+    );
+    return result.data;
+  },
+  async remove(id: string){
+    const result = await axiosInstance.delete(
+      `${URL_CONTROLER}/${id}`
     )
 
     return result.data
