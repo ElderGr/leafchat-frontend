@@ -22,7 +22,6 @@ const usersService = {
         roles
       }
     );
-    console.log(result)
     return result.data;
   },
   async findMany(params?: any){
