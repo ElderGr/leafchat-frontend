@@ -12,7 +12,6 @@ export function Feed(){
         <Space direction="vertical" size="large" style={{ display: 'flex' }}>
         {data && data.map(post => (
           <Card 
-          
             actions={[
                 <div 
                     onClick={() => { addLike.mutateAsync(post.id) }}
