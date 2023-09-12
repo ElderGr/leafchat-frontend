@@ -15,6 +15,13 @@ const postsService = {
 
     return result.data
   },
+  async addLike(id: string){
+    const result = await axiosInstance.post<void>(
+        `${URL_CONTROLER}/${id}/like`
+    )
+
+    return result.data
+  }
 };
 
 export default postsService

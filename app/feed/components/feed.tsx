@@ -1,28 +1,36 @@
 import { Avatar, Badge, Card, Col, Row, Space, Tooltip } from "antd";
 import { UserOutlined, MoreOutlined, CommentOutlined, LikeOutlined } from '@ant-design/icons';
-import { useListPost } from "@/app/domain/post/post.hook";
+import { useLikeOnPost, useListPost } from "@/app/domain/post/post.hook";
 import { usePostContext } from "@/app/context/post";
 
 export function Feed(){
     const { data } = useListPost()
+    const addLike = useLikeOnPost()
     const { openCommentsOnForm } = usePostContext()
-    
+
     return (
         <Space direction="vertical" size="large" style={{ display: 'flex' }}>
         {data && data.map(post => (
           <Card 
+          
             actions={[
-              <Tooltip key="like" placement="top" title='Curtir' >
-                <Badge  count={5}>
-                  <LikeOutlined  />
-                </Badge>
-              </Tooltip>,
+                <div 
+                    onClick={() => { addLike.mutateAsync(post.id) }}
+                    key="like" 
+                >
+                    <Tooltip placement="top" title='Curtir' >
+                        <Badge  count={post._count.Likes}>
+                        <LikeOutlined  />
+                        </Badge>
+                    </Tooltip>
+                </div>
+              ,
               <div onClick={() => openCommentsOnForm(post)} key="comments" >
                 <Tooltip
                     placement="top" 
                     title='Comentários' 
                 >
-                    <Badge count={5}>
+                    <Badge count={post._count.Comments}>
                         <CommentOutlined  key="edit" />
                     </Badge>
               </Tooltip>
