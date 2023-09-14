@@ -11,3 +11,9 @@ export type Post = BaseQuery & {
         Likes: number;
     }
 }
+
+export type CreatePost = {
+    description: string;
+    title: string;
+    files: any;
+}

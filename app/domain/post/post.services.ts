@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
-import axiosInstance, { SERVICE_BASE_URL } from '@/app/config/axios';
-import { Post } from './post.types';
+import axiosInstance, { SERVICE_BASE_URL, axiosMultipartData } from '@/app/config/axios';
+import { Post, CreatePost} from './post.types';
 
 const URL_CONTROLER = `${SERVICE_BASE_URL}/posts`;
 
@@ -21,6 +21,30 @@ const postsService = {
     )
 
     return result.data
+  },
+  async create(data: CreatePost){
+
+    const formData = new FormData()
+
+    formData.append('description', data.description)
+    formData.append('title', data.title)
+    console.log(formData)
+    
+    data.files.forEach(file => {
+      formData.append('image', file.originFileObj) 
+    });
+
+    const result = await axiosMultipartData.post<Post>(
+      `${URL_CONTROLER}`,
+      formData,
+      {
+        headers: {
+					"content-type": 'multipart/form-data; boundary=----WebKitFormBoundaryqTqJIxvkWFYqvP5s'
+				}
+      }
+  )
+
+    return result
   }
 };
 

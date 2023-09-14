@@ -25,3 +25,24 @@ export function useLikeOnPost(){
 
     return mutation
 }
+
+export function useCreatePost(){
+    const queryClient = useQueryClient();
+    const notification = useNotification()
+
+    const mutation = useMutation(postsService.create, {
+        onSuccess(res: any) {
+            notification.success({
+                message: 'Post criado com sucesso'
+            })
+            queryClient.invalidateQueries('posts')
+        },
+        onError(err) {
+            notification.error({
+                message: 'Erro ao criar um post'
+            })
+        }
+    }) 
+
+    return mutation 
+}
