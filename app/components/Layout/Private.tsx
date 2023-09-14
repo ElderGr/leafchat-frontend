@@ -7,6 +7,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { useRouter, usePathname } from 'next/navigation';
+import { ChatContainer } from '../Chat';
 const { Header, Sider, Content,  } = Layout;
 
 type PrivateProps = {
@@ -81,6 +82,7 @@ function Private ({
           }}
         >
           {children}
+          <ChatContainer />
         </Content>
       </Layout>
     </Layout>

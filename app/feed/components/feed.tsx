@@ -1,4 +1,4 @@
-import { Avatar, Badge, Card, Col, Row, Space, Tooltip } from "antd";
+import { Avatar, Badge, Card, Col, Image, List, Row, Space, Tooltip } from "antd";
 import { UserOutlined, MoreOutlined, CommentOutlined, LikeOutlined } from '@ant-design/icons';
 import { useLikeOnPost, useListPost } from "@/app/domain/post/post.hook";
 import { usePostContext } from "@/app/context/post";
@@ -52,6 +52,23 @@ export function Feed(){
             <Row>
               <Col offset={1} span={20}>
                 <p>{post.description}</p>
+              </Col>
+              <Col span={24}>
+                {post.Post_files.length > 0 && (
+                  <List
+                    grid={{ gutter: 16, column: 4 }}
+                    dataSource={post.Post_files}
+                    renderItem={(item) => (
+                      <Image 
+                          key={item.id}
+                          src={item.link}
+                          alt='image'
+                          width={200}
+                          height={200}
+                        />
+                      )}
+                  />
+                )}
               </Col>
             </Row>
           </Card>

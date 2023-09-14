@@ -5,7 +5,14 @@ export type Post = BaseQuery & {
     description: string;
     title: string;
     user_id: string;
-    Post_files: string[];
+    Post_files: {
+        create_at: string;
+        id: string;
+        link: string;
+        name: string;
+        post_id: string;
+        updated_at: string;
+    }[];
     _count: {
         Comments: number;
         Likes: number;
