@@ -3,7 +3,7 @@ import postsService from "./post.services"
 import { useNotification } from "@/app/hooks";
 
 export function useListPost(params?: any){
-    const query = useQuery(['posts', params], () => postsService.findMany(params))
+    const query = useQuery(['posts', params], () => postsService.findMany(params), {keepPreviousData: true})
     
     return query
 }
