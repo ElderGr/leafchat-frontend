@@ -8,7 +8,7 @@ import { NewPostForm } from "./new-post-form";
 
 export default function FeedContainer() {
 
-    const { openNewPostForm } = usePostContext()
+    const { openNewPostForm, commentsOnPost } = usePostContext()
 
     return (
         <Row>
@@ -16,7 +16,7 @@ export default function FeedContainer() {
                 <Button size="large" type="primary" onClick={openNewPostForm}>
                     Adicionar post
                 </Button>
-                <CommentFeed />
+                {commentsOnPost && <CommentFeed />}
                 <NewPostForm />
             </Col>
             <Col span={17}>
