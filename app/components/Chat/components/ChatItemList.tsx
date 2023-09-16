@@ -2,9 +2,20 @@ import { Avatar, Badge, Col, Row } from "antd";
 import { UserOutlined } from '@ant-design/icons';
 import './index.styles.css'
 
-export function ChatItemList(){
+type Props = {
+    handleSelectChat(): void;
+    active: boolean;
+}
+
+export function ChatItemList({
+    handleSelectChat,
+    active
+}: Props){
     return (
-        <Row className="chat-container">
+        <Row 
+            onClick={handleSelectChat} 
+            className={`chat-container ${active ? 'chat-active' : ''}`}
+        >
             <Col span={2}>
                 <Avatar 
                     icon={<UserOutlined />}

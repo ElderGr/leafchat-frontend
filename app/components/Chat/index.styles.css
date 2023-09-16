@@ -1,0 +1,9 @@
+.chat-list .ant-collapse-content{
+    overflow-y: scroll;
+    height: 45vh;
+}
+
+.chat-list .ant-collapse-header{
+    background-color: rgb(201, 201, 201);
+    border-radius: 0 !important;
+}
