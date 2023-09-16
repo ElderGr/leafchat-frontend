@@ -8,7 +8,14 @@
     transition: 0.1s ease-in;
 }
 
-#chat>div{
+#chat{
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    overflow-y: scroll;
+    max-height: 400px;
+}
+
+#chat .ant-list-items{
     display: flex !important;
     flex-direction: column-reverse !important;
 }

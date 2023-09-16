@@ -1,6 +1,7 @@
 import { Collapse, CollapseProps, Space } from "antd";
 import { ChatItemList } from "./components/ChatItemList";
 import Chat from "./components/Chat";
+import { CloseOutlined } from '@ant-design/icons'; 
 
 export function ChatContainer(){
     const onChange = (key: string | string[]) => {
@@ -26,6 +27,7 @@ export function ChatContainer(){
         {
             key: '1',
             label: 'Ednaldo Pereira',
+            extra: <CloseOutlined />,
             children:  
             <div>
                 <Chat />
