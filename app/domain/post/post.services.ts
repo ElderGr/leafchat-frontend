@@ -30,10 +30,12 @@ const postsService = {
     formData.append('title', data.title)
     console.log(formData)
     
-    data.files.forEach(file => {
-      formData.append('image', file.originFileObj) 
-    });
-
+    if(data.files){
+      data.files.forEach(file => {
+        formData.append('image', file.originFileObj) 
+      });
+    }
+    
     const result = await axiosMultipartData.post<Post>(
       `${URL_CONTROLER}`,
       formData,
