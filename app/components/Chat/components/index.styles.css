@@ -1,0 +1,21 @@
+.chat-container{
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+.chat-container:hover{
+    background-color: rgba(240, 240, 240, 0.5);
+    transition: 0.1s ease-in;
+}
+
+#chat{
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    overflow-y: scroll;
+    max-height: 400px;
+}
+
+#chat .ant-list-items{
+    display: flex !important;
+    flex-direction: column-reverse !important;
+}

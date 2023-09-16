@@ -1,4 +1,4 @@
-import { Avatar, Badge, Card, Col, Row, Space, Tooltip } from "antd";
+import { Avatar, Badge, Card, Col, Image, List, Row, Space, Tooltip } from "antd";
 import { UserOutlined, MoreOutlined, CommentOutlined, LikeOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useLikeOnPost, useListPost } from "@/app/domain/post/post.hook";
@@ -63,32 +63,49 @@ export function Feed() {
                     <Badge count={post._count.Comments}>
                       <CommentOutlined key="edit" />
                     </Badge>
-                  </Tooltip>
-                </div>
-                ,
-                <Tooltip key="options" placement="top" title='Opções'>
-                  <MoreOutlined />
-                </Tooltip>
-              ]}
-              key={post.id}
-            >
-              <Row>
-                <Col span={1}>
-                  <Avatar icon={<UserOutlined />} />
-                </Col>
-                <Col span={20}>
-                  <h2>{post.title}</h2>
-                </Col>
-              </Row>
-              <Row>
-                <Col offset={1} span={20}>
-                  <p>{post.description}</p>
-                </Col>
-              </Row>
-            </Card>
-          ))}
-        </InfiniteScroll>
+              </Tooltip>
+              </div>
+              ,
+              <Tooltip key="options" placement="top" title='Opções'>
+                <MoreOutlined />
+              </Tooltip>
+            ]}
+            key={post.id}
+          >
+            <Row>
+              <Col span={1}>
+                <Avatar icon={<UserOutlined />} />
+              </Col>
+              <Col span={20}>
+                <h2>{post.title}</h2>
+              </Col>
+            </Row>
+            <Row>
+              <Col offset={1} span={20}>
+                <p>{post.description}</p>
+              </Col>
+              <Col span={24}>
+                {post.Post_files.length > 0 && (
+                  <List
+                    grid={{ gutter: 16, column: 4 }}
+                    dataSource={post.Post_files}
+                    renderItem={(item) => (
+                      <Image 
+                          key={item.id}
+                          src={item.link}
+                          alt='image'
+                          width={200}
+                          height={200}
+                        />
+                      )}
+                  />
+                )}
+              </Col>
+            </Row>
+          </Card>
+        ))}
+       </InfiniteScroll>
       </div>
-    </Space>
-  )
+      </Space>
+    )
 }
