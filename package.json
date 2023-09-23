@@ -15,6 +15,7 @@
     "antd": "^5.8.5",
     "autoprefixer": "10.4.15",
     "axios": "^1.5.0",
+    "bufferutil": "^4.0.7",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
     "formik": "^2.4.3",
@@ -25,8 +26,11 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-query": "^3.39.3",
     "react-timer-hook": "^3.0.7",
+    "socket.io-client": "^4.7.2",
     "tailwindcss": "3.3.3",
     "typescript": "5.2.2",
-    "windstitch": "^0.3.0"
+    "utf-8-validate": "^6.0.3",
+    "windstitch": "^0.3.0",
+    "ws": "^8.14.2"
   }
 }

@@ -4,15 +4,22 @@ import { ChatFooter } from './ChatFooter';
 import { ChatMessagesList } from './ChatMessagesList';
 import { ChatFooterAudio } from './ChatFooterAudio';
 
-export function Chat(){
+type Props = {
+  chat: string | null
+}
+
+export function Chat(props: Props){
   const [isRecording, setIsRecording] = useState(false)
 
   return (
     <div>
-      <ChatMessagesList />
+      <ChatMessagesList 
+        chat={props.chat}
+      />
       {!isRecording ? (
         <ChatFooter 
           openAudioChat={() => setIsRecording(true)}
+          chat={props.chat}
         />
       ) : (
         <ChatFooterAudio 

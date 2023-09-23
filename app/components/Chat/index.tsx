@@ -2,17 +2,23 @@ import { Button, Collapse, CollapseProps, Space } from "antd";
 import { ChatItemList } from "./components/ChatItemList";
 import Chat from "./components/Chat";
 import { CloseOutlined } from '@ant-design/icons'; 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './index.styles.css'
+import { socket } from "@/app/config/socket/socket.io";
+import { ChatsModel } from "@/app/domain/chats/chats.types";
 
 export function ChatContainer(){
     const [selectedChat, setSelectedChat] = useState<string | null>(null)
+    const [chats, setChats] = useState<ChatsModel[]>([])
 
-    const chats = Array.from({length: 20}, (_, index) => {
-        return {
-            id: `${index}-absc`
-        }
-    })
+    useEffect(() => {
+        socket.emit('chat_list')
+    }, [])
+
+    socket
+        .on('chat_list', (chats: ChatsModel[]) => {
+            setChats(chats)
+        })
 
     const items: CollapseProps['items'] = [
     {
@@ -23,6 +29,7 @@ export function ChatContainer(){
             {chats.map((chat, index) => (
                 <ChatItemList
                     key={index}
+                    data={chat}
                     active={selectedChat === chat.id}
                     handleSelectChat={() => setSelectedChat(chat.id)} 
                 />
@@ -33,7 +40,7 @@ export function ChatContainer(){
     const chatMessages: CollapseProps['items'] = [
         {
             key: '1',
-            label: 'Ednaldo Pereira',
+            label: selectedChat,
             extra: (
                 <Button type='text' htmlType="button" shape="circle">
                     <CloseOutlined onClick={() => setSelectedChat(null)} />
@@ -41,7 +48,9 @@ export function ChatContainer(){
             ),
             children:  
             <div>
-                <Chat />
+                <Chat 
+                    chat={selectedChat}
+                />
             </div>
         }];
 
@@ -55,9 +64,7 @@ export function ChatContainer(){
                 {selectedChat && (
                     <Collapse
                         defaultActiveKey={['1']}
-                        style={{
-                            width: '400px'
-                        }}
+                        style={{ width: '400px' }}
                         items={chatMessages}
                     />
                 )}
