@@ -105,21 +105,28 @@ export function ChatMessagesList({
             // loadMore={loadMore}
             dataSource={list}
             id='chat'
-            renderItem={(item) => (
-            <List.Item>
-                <Skeleton 
-                  avatar 
-                  title={false} 
-                  loading={false} 
-                  active
-                >
-                <List.Item.Meta
-                    avatar={<Avatar style={{background: 'gray'}} src={<UserOutlined />} />}
-                    description={item.content}
-                />
-                </Skeleton>
-            </List.Item>
-            )}
+            renderItem={(item) => 
+              item.contentType === 'audio' ? (
+                <div>
+                  <audio controls src={item.content} />
+                </div>
+              ) :
+              (
+                <List.Item>
+                    <Skeleton 
+                      avatar 
+                      title={false} 
+                      loading={false} 
+                      active
+                    >
+                    <List.Item.Meta
+                        avatar={<Avatar style={{background: 'gray'}} src={<UserOutlined />} />}
+                        description={item.content}
+                    />
+                    </Skeleton>
+                </List.Item>
+              )
+            }
         />
     )
 }

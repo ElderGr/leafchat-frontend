@@ -1,7 +1,8 @@
-import { Button, Col, Popover, Row, Input, Tooltip, Form, InputProps } from "antd";
+import { Button, Col, Popover, Row, Input, Tooltip, Form, InputProps, notification } from "antd";
 import { AudioFilled, PlusOutlined, SendOutlined, CameraFilled, PaperClipOutlined } from '@ant-design/icons'; 
-import { socket } from "@/app/config/socket/socket.io";
 import { useAuthContext } from "@/app/context/auth";
+import { useCreateMessage } from "@/app/domain/messages/messages.hook";
+import { useNotification } from "@/app/hooks";
 
 type Props = {
   openAudioChat(): void;
@@ -13,8 +14,9 @@ export function ChatFooter({
   openAudioChat
 }: Props){
     const [form] = Form.useForm()
-
+    const createMessage = useCreateMessage()
     const { user } = useAuthContext()
+    const notification = useNotification()
 
     const content = (
         <Row style={{width: '200px'}}>
@@ -48,14 +50,21 @@ export function ChatFooter({
     const handleSendMessage = () => {
       const message = form.getFieldValue('message')
       
-      socket.emit('message_create', { 
+      if(!chat || !user?.id) {
+        notification.error({
+          message: 'Erro ao enviar a mensagem'
+        })
+        return 
+      }
+
+      createMessage.mutateAsync({ 
         chatId: chat,
         content: message,
         contentType: 'text',
         owner: user?.id
        })
       
-       form.resetFields()
+      form.resetFields()
     }
 
     const handleInputSubmit = (e: any) => {

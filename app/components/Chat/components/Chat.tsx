@@ -24,6 +24,7 @@ export function Chat(props: Props){
       ) : (
         <ChatFooterAudio 
           openAudioChat={() => setIsRecording(false)}
+          chat={props.chat}
         />
       )}
     </div>

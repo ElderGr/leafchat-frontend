@@ -6,3 +6,10 @@ export type MessagesModel = {
     contentType: string;
     created_at?: Date;
 }
+
+export type CreateMessage = {
+    chatId: string;
+    content: any;
+    contentType: 'text' | 'audio' | 'file'
+    owner: string;
+}
