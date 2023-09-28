@@ -8,8 +8,9 @@ export type MessagesModel = {
 }
 
 export type CreateMessage = {
-    chatId: string;
+    chatId?: string;
     content: any;
     contentType: 'text' | 'audio' | 'file'
     owner: string;
+    receiver?: string;
 }

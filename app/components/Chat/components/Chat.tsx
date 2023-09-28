@@ -3,9 +3,10 @@ import './index.styles.css'
 import { ChatFooter } from './ChatFooter';
 import { ChatMessagesList } from './ChatMessagesList';
 import { ChatFooterAudio } from './ChatFooterAudio';
+import { SelectedChat } from '..';
 
 type Props = {
-  chat: string | null
+  chat: SelectedChat | null
 }
 
 export function Chat(props: Props){

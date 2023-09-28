@@ -1,22 +1,19 @@
 /* eslint-disable import/no-anonymous-default-export */
 import axiosInstance, { SERVICE_BASE_URL } from '@/app/config/axios';
-import { MessagesModel, CreateMessage} from './messages.types';
+import { CreateChatDto, ChatsModel} from './chats.types';
 
-const URL_CONTROLER = `${SERVICE_BASE_URL}/message`;
+const URL_CONTROLER = `${SERVICE_BASE_URL}/chat`;
 
 const messagesService = {
   async create({
-    chatId,
     content,
     contentType,
-    owner
-  }: CreateMessage){
+    owner,
+    participants
+  }: CreateChatDto){
 
     const formData = new FormData()
 
-    if(chatId){
-      formData.append('chatId', chatId)
-    }
     formData.append('contentType', contentType)
     formData.append('owner', owner)
 
@@ -26,7 +23,9 @@ const messagesService = {
       formData.append('content', content)
     }
 
-    const result = await axiosInstance.post<MessagesModel>(
+    formData.append('participants', participants.toString())
+
+    const result = await axiosInstance.post<ChatsModel>(
       `${URL_CONTROLER}`,
       formData,
       {
@@ -34,7 +33,7 @@ const messagesService = {
 					"content-type": 'multipart/form-data; boundary=----WebKitFormBoundaryqTqJIxvkWFYqvP5s'
 				}
       }
-  )
+    )
 
     return result
   }

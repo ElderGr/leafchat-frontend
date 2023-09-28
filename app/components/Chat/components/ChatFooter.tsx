@@ -3,10 +3,12 @@ import { AudioFilled, PlusOutlined, SendOutlined, CameraFilled, PaperClipOutline
 import { useAuthContext } from "@/app/context/auth";
 import { useCreateMessage } from "@/app/domain/messages/messages.hook";
 import { useNotification } from "@/app/hooks";
+import { SelectedChat } from "..";
+import { useCreateChat } from "@/app/domain/chats/chat.hook";
 
 type Props = {
   openAudioChat(): void;
-  chat: string | null;
+  chat: SelectedChat | null;
 }
 
 export function ChatFooter({
@@ -14,7 +16,10 @@ export function ChatFooter({
   openAudioChat
 }: Props){
     const [form] = Form.useForm()
+
     const createMessage = useCreateMessage()
+    const createChat = useCreateChat()
+
     const { user } = useAuthContext()
     const notification = useNotification()
 
@@ -57,12 +62,24 @@ export function ChatFooter({
         return 
       }
 
-      createMessage.mutateAsync({ 
-        chatId: chat,
-        content: message,
-        contentType: 'text',
-        owner: user?.id
-       })
+      console.log(chat)
+      
+      if(chat.type === 'existend'){
+        createMessage.mutateAsync({ 
+          chatId: chat.id || undefined,
+          content: message,
+          contentType: 'text',
+          owner: user?.id,
+          receiver: chat.receiver
+        })
+      }else{
+        createChat.mutateAsync({
+          content: message,
+          contentType: 'text',
+          owner: user.id,
+          participants: [chat.receiver || '', user?.id]
+        })
+      }
       
       form.resetFields()
     }
@@ -99,12 +116,12 @@ export function ChatFooter({
                         onKeyDown={handleInputSubmit}
                         placeholder="Digite uma mensagem"
                         suffix={
-                        <Tooltip title="Extra information">
-                            <SendOutlined 
-                              onClick={handleSendMessage} 
-                              style={{ color: 'rgba(0,0,0,.45)' }} 
-                            />
-                        </Tooltip>
+                          <Tooltip title="Extra information">
+                              <SendOutlined 
+                                onClick={handleSendMessage} 
+                                style={{ color: 'rgba(0,0,0,.45)' }} 
+                              />
+                          </Tooltip>
                         }
                       />
                     </Form.Item>

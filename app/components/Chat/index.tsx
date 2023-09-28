@@ -1,14 +1,21 @@
-import { Button, Collapse, CollapseProps, Space } from "antd";
+import { Button, Col, Collapse, CollapseProps, Row, Space, Tabs, TabsProps } from "antd";
 import { ChatItemList } from "./components/ChatItemList";
 import Chat from "./components/Chat";
-import { CloseOutlined } from '@ant-design/icons'; 
+import { CloseOutlined, MessageFilled, PlusOutlined } from '@ant-design/icons'; 
 import { useEffect, useState } from 'react'
 import './index.styles.css'
 import { socket } from "@/app/config/socket/socket.io";
 import { ChatsModel } from "@/app/domain/chats/chats.types";
+import { NewChatItemList } from "./components/NewChatItemList";
+
+export type SelectedChat = {
+    id: string | null;
+    type: 'existend' | 'inexistend';
+    receiver?: string;
+}
 
 export function ChatContainer(){
-    const [selectedChat, setSelectedChat] = useState<string | null>(null)
+    const [selectedChat, setSelectedChat] = useState<SelectedChat | null>(null)
     const [chats, setChats] = useState<ChatsModel[]>([])
 
     useEffect(() => {
@@ -19,28 +26,69 @@ export function ChatContainer(){
         .on('chat_list', (chats: ChatsModel[]) => {
             setChats(chats)
         })
+    
+        const onChange = (key: string) => {
+            console.log(key);
+          };
+          
+    const tabItems: TabsProps['items'] = [
+        {
+            key: '1',
+            label: (
+                <label>
+                    <MessageFilled />
+                    Conversas
+                </label>
+            ),
+            children: chats.map((chat, index) => (
+                <ChatItemList
+                    key={index}
+                    data={chat}
+                    active={selectedChat?.id === chat.id}
+                    handleSelectChat={() => setSelectedChat({
+                        type: 'existend',
+                        id: chat.id
+                    })} 
+                />
+            )),
+        },
+        {
+            key: '2',
+            label: (
+                <label>
+                    <PlusOutlined />
+                    Nova conversa
+                </label>
+            ),
+            children: <NewChatItemList openChat={(id) => {
+                setSelectedChat({
+                    type: 'inexistend',
+                    receiver: id,
+                    id: ''
+                })
+            }} />,
+        },
+    ];
 
     const items: CollapseProps['items'] = [
     {
         key: '1',
         label: 'Mensagens',
         children:  
-        <div>
-            {chats.map((chat, index) => (
-                <ChatItemList
-                    key={index}
-                    data={chat}
-                    active={selectedChat === chat.id}
-                    handleSelectChat={() => setSelectedChat(chat.id)} 
+            <Row>
+                <Tabs 
+                    style={{width: '100%'}} 
+                    defaultActiveKey="1" 
+                    items={tabItems} 
+                    onChange={onChange} 
                 />
-            ))}
-        </div>
+            </Row>
     }];
 
     const chatMessages: CollapseProps['items'] = [
         {
             key: '1',
-            label: selectedChat,
+            label: selectedChat?.id,
             extra: (
                 <Button type='text' htmlType="button" shape="circle">
                     <CloseOutlined onClick={() => setSelectedChat(null)} />
@@ -49,7 +97,7 @@ export function ChatContainer(){
             children:  
             <div>
                 <Chat 
-                    chat={selectedChat}
+                    chat={selectedChat || null}
                 />
             </div>
         }];

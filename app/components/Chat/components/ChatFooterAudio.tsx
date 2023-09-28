@@ -5,10 +5,12 @@ import { useStopwatch } from 'react-timer-hook';
 import { useEffect } from "react";
 import { useCreateMessage } from "@/app/domain/messages/messages.hook";
 import { useAuthContext } from "@/app/context/auth";
+import { SelectedChat } from "..";
+import { useCreateChat } from "@/app/domain/chats/chat.hook";
 
 type Props = {
     openAudioChat(): void;
-    chat: string | null;
+    chat: SelectedChat | null;
 }
 
 let chunks: any = [];
@@ -20,6 +22,8 @@ export function ChatFooterAudio({
 }: Props){
 
     const createMessage = useCreateMessage()
+    const createChat = useCreateChat()
+
     const { user } = useAuthContext()
 
     useEffect(() => {
@@ -38,12 +42,9 @@ export function ChatFooterAudio({
     }, [])
 
     const handleAudioRecord = (stream: any) => {
-        console.log(stream)
         mediaRecorder = new MediaRecorder(stream);
 
-        mediaRecorder.start(1000);
-        console.log(mediaRecorder.state);
-        console.log("recorder started");  
+        mediaRecorder.start(1000);  
 
         mediaRecorder.ondataavailable = (e) => {
             chunks.push(e.data);
@@ -51,7 +52,6 @@ export function ChatFooterAudio({
     }
 
     const handleAudioStop = () => {
-        console.log(mediaRecorder)
         if(mediaRecorder) mediaRecorder.stop()
         
         const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
@@ -62,12 +62,23 @@ export function ChatFooterAudio({
             return 
         }
 
-        createMessage.mutateAsync({
-            chatId: chat,
-            content: blob,
-            contentType: 'audio',
-            owner: user.id
-        })
+        if(chat.type === "existend"){
+            createMessage.mutateAsync({
+                chatId: chat.id || '',
+                content: blob,
+                contentType: 'audio',
+                owner: user.id,
+                receiver: chat.receiver
+            })
+        }else{
+            createChat.mutateAsync({
+                content: blob,
+                contentType: 'audio',
+                owner: user.id,
+                participants: [user.id, chat.receiver || '']
+            })
+        }
+        
         handleCancelAudio()
     }
 
