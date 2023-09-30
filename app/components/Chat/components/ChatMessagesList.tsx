@@ -5,6 +5,7 @@ import './index.styles.css'
 import { socket } from '@/app/config/socket/socket.io';
 import { MessagesModel } from '@/app/domain/messages/messages.types';
 import { SelectedChat } from '..';
+import { useChatContext } from '@/app/context/chat';
 
 interface DataType {
     gender?: string;
@@ -30,19 +31,19 @@ type Props = {
   chat: SelectedChat | null;
 }
 
-export function ChatMessagesList({
-  chat
-}: Props){
+export function ChatMessagesList(){
   const [initLoading, setInitLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<MessagesModel[]>([]);
   const [list, setList] = useState<MessagesModel[]>([]);
 
+  const { selectedChat } = useChatContext()
+
   useEffect(() => {
-    if(chat?.id){
-      socket.emit('message_list', chat?.id)
+    if(selectedChat?.id){
+      socket.emit('message_list', selectedChat?.id)
     }
-  }, [chat?.id])
+  }, [selectedChat?.id])
 
   
   socket.on('message_list', (data: MessagesModel[]) => {

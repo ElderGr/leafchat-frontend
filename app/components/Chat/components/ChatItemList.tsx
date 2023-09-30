@@ -2,6 +2,7 @@ import { Avatar, Badge, Col, Row } from "antd";
 import { UserOutlined } from '@ant-design/icons';
 import './index.styles.css'
 import { ChatsModel } from "@/app/domain/chats/chats.types";
+import { useChatContext } from "@/app/context/chat";
 
 type Props = {
     handleSelectChat(): void;

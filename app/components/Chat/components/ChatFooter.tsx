@@ -5,17 +5,17 @@ import { useCreateMessage } from "@/app/domain/messages/messages.hook";
 import { useNotification } from "@/app/hooks";
 import { SelectedChat } from "..";
 import { useCreateChat } from "@/app/domain/chats/chat.hook";
+import { useChatContext } from "@/app/context/chat";
 
 type Props = {
   openAudioChat(): void;
-  chat: SelectedChat | null;
 }
 
 export function ChatFooter({
-  chat,
   openAudioChat
 }: Props){
     const [form] = Form.useForm()
+    const { selectedChat, handleSelectChat } = useChatContext()
 
     const createMessage = useCreateMessage()
     const createChat = useCreateChat()
@@ -55,30 +55,35 @@ export function ChatFooter({
     const handleSendMessage = () => {
       const message = form.getFieldValue('message')
       
-      if(!chat || !user?.id) {
+      if(!selectedChat || !user?.id) {
         notification.error({
           message: 'Erro ao enviar a mensagem'
         })
         return 
       }
-
-      console.log(chat)
       
-      if(chat.type === 'existend'){
+      if(selectedChat?.type === 'existend'){
         createMessage.mutateAsync({ 
-          chatId: chat.id || undefined,
+          chatId: selectedChat.id || undefined,
           content: message,
           contentType: 'text',
           owner: user?.id,
-          receiver: chat.receiver
+          receiver: selectedChat.receiver
         })
       }else{
         createChat.mutateAsync({
           content: message,
           contentType: 'text',
           owner: user.id,
-          participants: [chat.receiver || '', user?.id]
+          participants: [selectedChat?.receiver || '', user?.id]
         })
+        .then((res) => {
+          handleSelectChat({
+            id: res.data.id,
+            type: 'existend',
+            receiver: selectedChat?.receiver || ''
+          })
+        }) 
       }
       
       form.resetFields()

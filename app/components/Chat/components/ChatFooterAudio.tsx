@@ -5,12 +5,11 @@ import { useStopwatch } from 'react-timer-hook';
 import { useEffect } from "react";
 import { useCreateMessage } from "@/app/domain/messages/messages.hook";
 import { useAuthContext } from "@/app/context/auth";
-import { SelectedChat } from "..";
 import { useCreateChat } from "@/app/domain/chats/chat.hook";
+import { useChatContext } from "@/app/context/chat";
 
 type Props = {
     openAudioChat(): void;
-    chat: SelectedChat | null;
 }
 
 let chunks: any = [];
@@ -18,11 +17,11 @@ let mediaRecorder: any = null
 
 export function ChatFooterAudio({
     openAudioChat,
-    chat
 }: Props){
 
     const createMessage = useCreateMessage()
     const createChat = useCreateChat()
+    const { selectedChat, handleSelectChat } = useChatContext()
 
     const { user } = useAuthContext()
 
@@ -57,26 +56,33 @@ export function ChatFooterAudio({
         const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
         chunks = [];
 
-        if(!chat || !user){
+        if(!selectedChat || !user){
             console.log('erro no envio')
             return 
         }
 
-        if(chat.type === "existend"){
+        if(selectedChat.type === "existend"){
             createMessage.mutateAsync({
-                chatId: chat.id || '',
+                chatId: selectedChat.id || '',
                 content: blob,
                 contentType: 'audio',
                 owner: user.id,
-                receiver: chat.receiver
+                receiver: selectedChat.receiver
             })
         }else{
             createChat.mutateAsync({
                 content: blob,
                 contentType: 'audio',
                 owner: user.id,
-                participants: [user.id, chat.receiver || '']
+                participants: [user.id, selectedChat.receiver || '']
             })
+            .then((res) => {
+                handleSelectChat({
+                  id: res.data.id,
+                  type: 'existend',
+                  receiver: selectedChat?.receiver || ''
+                })
+            }) 
         }
         
         handleCancelAudio()
@@ -85,7 +91,7 @@ export function ChatFooterAudio({
     const {
         seconds,
         minutes,
-        hours,
+        hours, 
         reset,
         isRunning,
         pause,

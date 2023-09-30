@@ -1,22 +1,23 @@
 import { useListUsers } from "@/app/domain/user/user.hook"
 import { Avatar, Col, Row } from "antd"
 import { UserOutlined } from '@ant-design/icons';
+import { useChatContext } from "@/app/context/chat";
 
-type Props = {
-    openChat(id: string): void;
-}
-
-export function NewChatItemList({
-    openChat
-}: Props){
+export function NewChatItemList(){
     const { data } = useListUsers()
+    const { handleSelectChat } = useChatContext()
 
     return (
         <div>
             {data?.map(user => (
                 <Row
                     key={user.id}
-                    onClick={() => openChat(user.id)} 
+                    onClick={() => {
+                        handleSelectChat({
+                            receiver: user.id,
+                            type: 'inexistend',
+                        })
+                    }} 
                     className={`chat-container`}
                 >
                     <Col span={2}>
