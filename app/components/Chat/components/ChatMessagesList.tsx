@@ -1,35 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Button, List, Skeleton, message } from 'antd';
+import { Avatar, Button, List, Skeleton } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import './index.styles.css'
 import { socket } from '@/app/config/socket/socket.io';
 import { MessagesModel } from '@/app/domain/messages/messages.types';
-import { SelectedChat } from '..';
 import { useChatContext } from '@/app/context/chat';
 
-interface DataType {
-    gender?: string;
-    name: {
-      title?: string;
-      first?: string;
-      last?: string;
-    };
-    email?: string;
-    picture: {
-      large?: string;
-      medium?: string;
-      thumbnail?: string;
-    };
-    nat?: string;
-    loading: boolean;
-}
-
 const count = 3;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
-
-type Props = {
-  chat: SelectedChat | null;
-}
 
 export function ChatMessagesList(){
   const [initLoading, setInitLoading] = useState(false);
@@ -47,14 +24,13 @@ export function ChatMessagesList(){
 
   
   socket.on('message_list', (data: MessagesModel[]) => {
-    // setInitLoading(false);
     setData(data)
     setList(data)
   })
 
   const onLoadMore = () => {
     setLoading(true);
-    // data.concat([...new Array(count)].map(() => ({ loading: true, name: {}, picture: {} }))),
+
     setList(
       data.concat([...new Array(count)].map(() => ({ 
         content: '', 
@@ -64,17 +40,6 @@ export function ChatMessagesList(){
         senderId: ''
       }))),
     );
-
-    // fetch(fakeDataUrl)
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     const newData = data.concat(res.results);
-    //     setData(newData);
-    //     setList(newData);
-    //     setLoading(false);
-        
-    //     window.dispatchEvent(new Event('resize'));
-    //   });
   };
 
   const loadMore =

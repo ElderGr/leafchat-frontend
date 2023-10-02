@@ -3,7 +3,6 @@ import { AudioFilled, PlusOutlined, SendOutlined, CameraFilled, PaperClipOutline
 import { useAuthContext } from "@/app/context/auth";
 import { useCreateMessage } from "@/app/domain/messages/messages.hook";
 import { useNotification } from "@/app/hooks";
-import { SelectedChat } from "..";
 import { useCreateChat } from "@/app/domain/chats/chat.hook";
 import { useChatContext } from "@/app/context/chat";
 

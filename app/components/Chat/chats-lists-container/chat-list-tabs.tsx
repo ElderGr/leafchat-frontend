@@ -1,4 +1,30 @@
+import { Tabs, TabsProps } from "antd";
+import { ChatItemList } from "../components/ChatItemList";
+import { MessageFilled, PlusOutlined } from '@ant-design/icons'; 
+import { useEffect, useState } from 'react'
+import '../index.styles.css'
+import { socket } from "@/app/config/socket/socket.io";
+import { ChatsModel } from "@/app/domain/chats/chats.types";
+import { NewChatItemList } from "../components/NewChatItemList";
+import { useChatContext } from "@/app/context/chat";
+
 export function ChatListTabs(){
+    const { 
+        selectedChat, 
+        handleSelectChat,
+    } = useChatContext()
+    
+    const [chats, setChats] = useState<ChatsModel[]>([])
+
+    useEffect(() => {
+        socket.emit('chat_list')
+    }, [])
+
+    socket
+        .on('chat_list', (chats: ChatsModel[]) => {
+            setChats(chats)
+        })
+        
     const tabItems: TabsProps['items'] = [
         {
             key: '1',
@@ -13,7 +39,8 @@ export function ChatListTabs(){
                     key={index}
                     data={chat}
                     active={selectedChat?.id === chat.id}
-                    handleSelectChat={() => setSelectedChat({
+                    handleSelectChat={() => handleSelectChat({
+                        receiver: '',
                         type: 'existend',
                         id: chat.id
                     })} 
@@ -28,13 +55,7 @@ export function ChatListTabs(){
                     Nova conversa
                 </label>
             ),
-            children: <NewChatItemList openChat={(id) => {
-                setSelectedChat({
-                    type: 'inexistend',
-                    receiver: id,
-                    id: ''
-                })
-            }} />,
+            children: <NewChatItemList />,
         },
     ];
     return (
@@ -42,7 +63,6 @@ export function ChatListTabs(){
             style={{width: '100%'}} 
             defaultActiveKey="1" 
             items={tabItems} 
-            // onChange={onChange} 
         />
     )
 }
