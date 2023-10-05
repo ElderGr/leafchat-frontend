@@ -1,9 +1,8 @@
-import { Button, Col, Popover, Row, Input, Tooltip, Form, InputProps, notification } from "antd";
+import { Button, Col, Popover, Row, Input, Tooltip, Form } from "antd";
 import { AudioFilled, PlusOutlined, SendOutlined, CameraFilled, PaperClipOutlined } from '@ant-design/icons'; 
 import { useAuthContext } from "@/app/context/auth";
 import { useCreateMessage } from "@/app/domain/messages/messages.hook";
 import { useNotification } from "@/app/hooks";
-import { useCreateChat } from "@/app/domain/chats/chat.hook";
 import { useChatContext } from "@/app/context/chat";
 
 type Props = {
@@ -14,10 +13,9 @@ export function ChatFooter({
   openAudioChat
 }: Props){
     const [form] = Form.useForm()
-    const { selectedChat, handleSelectChat } = useChatContext()
+    const { selectedChat } = useChatContext()
 
     const createMessage = useCreateMessage()
-    const createChat = useCreateChat()
 
     const { user } = useAuthContext()
     const notification = useNotification()
@@ -61,29 +59,12 @@ export function ChatFooter({
         return 
       }
       
-      if(selectedChat?.type === 'existend'){
-        createMessage.mutateAsync({ 
-          chatId: selectedChat.id || undefined,
-          content: message,
-          contentType: 'text',
-          owner: user?.id,
-          receiver: selectedChat.receiver
-        })
-      }else{
-        createChat.mutateAsync({
-          content: message,
-          contentType: 'text',
-          owner: user.id,
-          participants: [selectedChat?.receiver || '', user?.id]
-        })
-        .then((res) => {
-          handleSelectChat({
-            id: res.data.id,
-            type: 'existend',
-            receiver: selectedChat?.receiver || ''
-          })
-        }) 
-      }
+      createMessage.mutateAsync({ 
+        chatId: selectedChat.id || undefined,
+        content: message,
+        contentType: 'text',
+        owner: user?.id,
+      })
       
       form.resetFields()
     }

@@ -18,10 +18,35 @@
     display: flex !important;
     flex-direction: column-reverse !important;
     overflow-y: scroll;
-    max-height: 400px;
+    height: 250px !important;
 }
 
 #chat .ant-list-items{
     display: flex !important;
     flex-direction: column-reverse !important;
+    padding: 10px;
+}
+
+
+.chat-message > .ant-list-item-meta-content > .ant-list-item-meta-title{
+    background-color: rgb(238, 238, 238) !important;
+    border-radius: 5px;
+    padding: 10px;
+    width: 80% !important;
+    word-break: break-word;
+}
+
+.own-message{
+    flex-direction: row-reverse !important;
+}
+
+.own-message > .ant-list-item-meta-content {
+    padding-right: 10px;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+}
+
+.own-message > .ant-list-item-meta-content > .ant-list-item-meta-title{
+    background-color: rgba(59, 161, 105, 0.788) !important;
 }

@@ -33,8 +33,8 @@ export function IndividualChatContainer(){
     return(
         <Collapse
             defaultActiveKey={['1']}
-            style={{ width: '400px' }}
             items={chatMessages}
+            className="individual-chat-container"
         />
     )
 }

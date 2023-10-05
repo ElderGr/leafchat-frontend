@@ -5,6 +5,7 @@ import './index.styles.css'
 import { socket } from '@/app/config/socket/socket.io';
 import { MessagesModel } from '@/app/domain/messages/messages.types';
 import { useChatContext } from '@/app/context/chat';
+import { useAuthContext } from '@/app/context/auth';
 
 const count = 3;
 
@@ -15,6 +16,7 @@ export function ChatMessagesList(){
   const [list, setList] = useState<MessagesModel[]>([]);
 
   const { selectedChat } = useChatContext()
+  const { user } = useAuthContext()
 
   useEffect(() => {
     if(selectedChat?.id){
@@ -79,8 +81,10 @@ export function ChatMessagesList(){
                       active
                     >
                     <List.Item.Meta
-                        avatar={<Avatar style={{background: 'gray'}} src={<UserOutlined />} />}
-                        description={item.content}
+                        avatar={<Avatar style={{background: 'gray'}} icon={<UserOutlined />} />}
+                        title={item.content}
+                        description={'data da mensagem'}
+                        className={`chat-message ${user?.id === item.senderId ? 'own-message' : ''}`}
                     />
                     </Skeleton>
                 </List.Item>

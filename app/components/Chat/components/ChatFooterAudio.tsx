@@ -64,7 +64,6 @@ export function ChatFooterAudio({
             content: blob,
             contentType: 'audio',
             owner: user.id,
-            receiver: selectedChat.receiver
         })
         
         handleCancelAudio()

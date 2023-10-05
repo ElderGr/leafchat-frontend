@@ -25,18 +25,19 @@ export function NewChatItemList(){
 
     return (
         <div>
-            {data?.map(user => (
+            {data?.map(currUser => currUser.id !== user?.id && (
                 <Row
-                    key={user.id}
-                    onClick={() => handleNewChat(user.id)} 
+                    key={currUser.id}
+                    onClick={() => handleNewChat(currUser.id)} 
                     className={`chat-container`}
                 >
                     <Col span={2}>
                         <Avatar 
-                            icon={<UserOutlined />}
+                            src={currUser.avatar_url} 
+                            icon={<UserOutlined />} 
                         />
                     </Col>
-                    <Col offset={1} span={10}>{user.name}</Col>
+                    <Col offset={1} span={10}>{currUser.name}</Col>
                 </Row>
             ))}
         </div>
