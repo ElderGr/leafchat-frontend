@@ -5,8 +5,10 @@ export type ChatsModel = {
 }
 
 export type CreateChatDto = {
-    owner: string;
     participants: string[];
-    content: any;
-    contentType: string;
   };
+
+export type FindAllChatsDto = {
+    participants?: string[]
+}
+  

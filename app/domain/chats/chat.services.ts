@@ -1,42 +1,32 @@
 /* eslint-disable import/no-anonymous-default-export */
 import axiosInstance, { SERVICE_BASE_URL } from '@/app/config/axios';
-import { CreateChatDto, ChatsModel} from './chats.types';
+import { CreateChatDto, ChatsModel, FindAllChatsDto} from './chats.types';
+import { MountQueryParamsParams } from '@/app/config/axios/query';
 
 const URL_CONTROLER = `${SERVICE_BASE_URL}/chat`;
 
-const messagesService = {
-  async create({
-    content,
-    contentType,
-    owner,
-    participants
-  }: CreateChatDto){
-
-    const formData = new FormData()
-
-    formData.append('contentType', contentType)
-    formData.append('owner', owner)
-
-    if(contentType !== 'text'){
-      formData.append('audio', content)
-    } else {
-      formData.append('content', content)
-    }
-
-    formData.append('participants', participants.toString())
+const chatService = {
+  async create(body: CreateChatDto){
 
     const result = await axiosInstance.post<ChatsModel>(
       `${URL_CONTROLER}`,
-      formData,
-      {
-        headers: {
-					"content-type": 'multipart/form-data; boundary=----WebKitFormBoundaryqTqJIxvkWFYqvP5s'
-				}
-      }
+      body,
+    )
+
+    return result
+  },
+  async findAll(params: FindAllChatsDto){
+
+    const paramString = MountQueryParamsParams({
+      params
+    })
+
+    const result = await axiosInstance.get<ChatsModel[]>(
+      `${URL_CONTROLER}?${paramString}`,
     )
 
     return result
   }
 };
 
-export default messagesService
+export default chatService

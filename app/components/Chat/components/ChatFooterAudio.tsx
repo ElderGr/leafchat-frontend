@@ -5,7 +5,6 @@ import { useStopwatch } from 'react-timer-hook';
 import { useEffect } from "react";
 import { useCreateMessage } from "@/app/domain/messages/messages.hook";
 import { useAuthContext } from "@/app/context/auth";
-import { useCreateChat } from "@/app/domain/chats/chat.hook";
 import { useChatContext } from "@/app/context/chat";
 
 type Props = {
@@ -20,8 +19,7 @@ export function ChatFooterAudio({
 }: Props){
 
     const createMessage = useCreateMessage()
-    const createChat = useCreateChat()
-    const { selectedChat, handleSelectChat } = useChatContext()
+    const { selectedChat } = useChatContext()
 
     const { user } = useAuthContext()
 
@@ -61,29 +59,13 @@ export function ChatFooterAudio({
             return 
         }
 
-        if(selectedChat.type === "existend"){
-            createMessage.mutateAsync({
-                chatId: selectedChat.id || '',
-                content: blob,
-                contentType: 'audio',
-                owner: user.id,
-                receiver: selectedChat.receiver
-            })
-        }else{
-            createChat.mutateAsync({
-                content: blob,
-                contentType: 'audio',
-                owner: user.id,
-                participants: [user.id, selectedChat.receiver || '']
-            })
-            .then((res) => {
-                handleSelectChat({
-                  id: res.data.id,
-                  type: 'existend',
-                  receiver: selectedChat?.receiver || ''
-                })
-            }) 
-        }
+        createMessage.mutateAsync({
+            chatId: selectedChat.id || '',
+            content: blob,
+            contentType: 'audio',
+            owner: user.id,
+            receiver: selectedChat.receiver
+        })
         
         handleCancelAudio()
     }
