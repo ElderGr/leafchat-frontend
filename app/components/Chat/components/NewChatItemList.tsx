@@ -6,7 +6,7 @@ import { useCreateChat } from "@/app/domain/chats/chat.hook";
 import { useAuthContext } from "@/app/context/auth";
 
 export function NewChatItemList(){
-    const { data } = useListUsers()
+    const { data } = useListUsers({})
     const { user } = useAuthContext()
     const { handleSelectChat } = useChatContext()
     const createChat = useCreateChat()

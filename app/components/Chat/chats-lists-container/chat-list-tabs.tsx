@@ -7,6 +7,7 @@ import { socket } from "@/app/config/socket/socket.io";
 import { ChatsModel } from "@/app/domain/chats/chats.types";
 import { NewChatItemList } from "../components/NewChatItemList";
 import { useChatContext } from "@/app/context/chat";
+import { useAuthContext } from "@/app/context/auth";
 
 export function ChatListTabs(){
     const { 
@@ -14,11 +15,15 @@ export function ChatListTabs(){
         handleSelectChat,
     } = useChatContext()
     
+    const { user } = useAuthContext()
+
     const [chats, setChats] = useState<ChatsModel[]>([])
 
     useEffect(() => {
-        socket.emit('chat_list')
-    }, [])
+        socket.emit('chat_list', {
+            participants: [user?.id]
+        })
+    }, [user?.id])
 
     socket
         .on('chat_list', (chats: ChatsModel[]) => {
@@ -34,16 +39,12 @@ export function ChatListTabs(){
                     Conversas
                 </label>
             ),
-            children: chats.map((chat, index) => (
+            children: chats.map((chat) => (
                 <ChatItemList
-                    key={index}
-                    data={chat}
+                    key={chat.id}
+                    chat={chat}
                     active={selectedChat?.id === chat.id}
-                    handleSelectChat={() => handleSelectChat({
-                        receiver: '',
-                        type: 'existend',
-                        id: chat.id
-                    })} 
+                    handleSelectChat={() => handleSelectChat(chat)} 
                 />
             )),
         },

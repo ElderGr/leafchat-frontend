@@ -6,6 +6,7 @@ import { socket } from '@/app/config/socket/socket.io';
 import { MessagesModel } from '@/app/domain/messages/messages.types';
 import { useChatContext } from '@/app/context/chat';
 import { useAuthContext } from '@/app/context/auth';
+import { useListUsers } from '@/app/domain/user/user.hook';
 
 const count = 3;
 
@@ -17,6 +18,9 @@ export function ChatMessagesList(){
 
   const { selectedChat } = useChatContext()
   const { user } = useAuthContext()
+  const chatUsers = useListUsers({
+    id: selectedChat?.participants || []
+  })
 
   useEffect(() => {
     if(selectedChat?.id){
@@ -81,7 +85,14 @@ export function ChatMessagesList(){
                       active
                     >
                     <List.Item.Meta
-                        avatar={<Avatar style={{background: 'gray'}} icon={<UserOutlined />} />}
+                        avatar={
+                          <Avatar 
+                            src={chatUsers.data?.find(currUser => 
+                              currUser.id === item.senderId)?.avatar_url
+                            }
+                            icon={<UserOutlined />} 
+                          />
+                        }
                         title={item.content}
                         description={'data da mensagem'}
                         className={`chat-message ${user?.id === item.senderId ? 'own-message' : ''}`}

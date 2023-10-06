@@ -15,9 +15,9 @@ export function MountQueryParamsParams({
         const param = params[key]
         if(param){
             if(paramString.length === 0){
-                paramString += `${key}=${param}`
+                paramString += `${key}=${param.toString()}`
             }else{
-                paramString += `&${key}=${param}`
+                paramString += `&${key}=${param.toString()}`
             }
         }
     })
