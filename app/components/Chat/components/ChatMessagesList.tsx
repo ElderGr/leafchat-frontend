@@ -7,6 +7,7 @@ import { MessagesModel } from '@/app/domain/messages/messages.types';
 import { useChatContext } from '@/app/context/chat';
 import { useAuthContext } from '@/app/context/auth';
 import { useListUsers } from '@/app/domain/user/user.hook';
+import { format } from 'date-fns';
 
 const count = 3;
 
@@ -94,7 +95,7 @@ export function ChatMessagesList(){
                           />
                         }
                         title={item.content}
-                        description={'data da mensagem'}
+                        description={item.created_at && format(new Date(item.created_at), 'HH:mm')}
                         className={`chat-message ${user?.id === item.senderId ? 'own-message' : ''}`}
                     />
                     </Skeleton>

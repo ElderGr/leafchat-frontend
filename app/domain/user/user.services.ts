@@ -29,7 +29,6 @@ const usersService = {
     const queryParams = MountQueryParamsParams({
       params
     })
-    console.log(queryParams, 'here')
     const result = await axiosInstance.get<User[]>(
         `${URL_CONTROLER}?${queryParams}`
     )
