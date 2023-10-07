@@ -5,42 +5,50 @@ import { useStopwatch } from 'react-timer-hook';
 import { useEffect } from "react";
 import { useCreateMessage } from "@/app/domain/messages/messages.hook";
 import { useAuthContext } from "@/app/context/auth";
-import { useCreateChat } from "@/app/domain/chats/chat.hook";
 import { useChatContext } from "@/app/context/chat";
+import { useNotification } from "@/app/hooks";
 
 type Props = {
     openAudioChat(): void;
 }
 
-let chunks: any = [];
-let mediaRecorder: any = null
+let chunks: Blob[] = [];
+let mediaRecorder: MediaRecorder
+let localStream: MediaStream
 
 export function ChatFooterAudio({
     openAudioChat,
 }: Props){
 
     const createMessage = useCreateMessage()
-    const createChat = useCreateChat()
-    const { selectedChat, handleSelectChat } = useChatContext()
+    const { selectedChat } = useChatContext()
+    const notification = useNotification()
 
     const { user } = useAuthContext()
 
     useEffect(() => {
+        handleBrowserMediaDevice()
+    }, [])
+
+    const handleBrowserMediaDevice = () => {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            console.log("getUserMedia supported.");
             navigator.mediaDevices
                 .getUserMedia({ audio: true, })
                 .then(handleAudioRecord)
                 .catch((err) => {
-                    console.error(`The following getUserMedia error occurred: ${err}`);
+                    notification.error({
+                        message: `Erro ao tentar lidar com o seguinte recurso: ${err}`
+                    });
                 }
             );
         } else {
-            console.log("getUserMedia not supported on your browser!");
+            notification.error({
+                message: 'Seu navegador não suporta o recurso de audio'
+            });
         }
-    }, [])
+    }
 
-    const handleAudioRecord = (stream: any) => {
+    const handleAudioRecord = (stream: MediaStream) => {
         mediaRecorder = new MediaRecorder(stream);
 
         mediaRecorder.start(1000);  
@@ -48,44 +56,39 @@ export function ChatFooterAudio({
         mediaRecorder.ondataavailable = (e) => {
             chunks.push(e.data);
         };
+
+        localStream = stream
     }
 
-    const handleAudioStop = () => {
-        if(mediaRecorder) mediaRecorder.stop()
-        
-        const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+    const handleAudioSend = () => {
+        const blob = new Blob(chunks, { type: "audio/webm" });
         chunks = [];
 
         if(!selectedChat || !user){
-            console.log('erro no envio')
+            notification.error({
+                message: 'Erro no envio do audio'
+            })
             return 
         }
-
-        if(selectedChat.type === "existend"){
-            createMessage.mutateAsync({
-                chatId: selectedChat.id || '',
-                content: blob,
-                contentType: 'audio',
-                owner: user.id,
-                receiver: selectedChat.receiver
-            })
-        }else{
-            createChat.mutateAsync({
-                content: blob,
-                contentType: 'audio',
-                owner: user.id,
-                participants: [user.id, selectedChat.receiver || '']
-            })
-            .then((res) => {
-                handleSelectChat({
-                  id: res.data.id,
-                  type: 'existend',
-                  receiver: selectedChat?.receiver || ''
-                })
-            }) 
-        }
+        
+        createMessage.mutateAsync({
+            chatId: selectedChat.id || '',
+            content: blob,
+            contentType: 'audio',
+            owner: user.id,
+        })
         
         handleCancelAudio()
+    }
+
+    const handleStopAudioTracks = () => {
+        if(localStream) localStream.getAudioTracks()[0].stop();
+    }
+
+    const handleCancelAudio = () => {
+        handleStopAudioTracks()
+        reset()
+        openAudioChat()
     }
 
     const {
@@ -97,11 +100,6 @@ export function ChatFooterAudio({
         pause,
         start
     } = useStopwatch({ autoStart: true })
-
-    const handleCancelAudio = () => {
-        reset()
-        openAudioChat()
-    }
 
     return (
         <Row style={{marginTop: '10px'}} justify='end'>
@@ -124,7 +122,7 @@ export function ChatFooterAudio({
             </Col>
             <Col span={2} >
                 <Button 
-                    onClick={handleAudioStop}
+                    onClick={handleAudioSend}
                     size="large" 
                     type='text' 
                     ghost 

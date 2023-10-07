@@ -12,7 +12,5 @@ export interface ChatContextProps {
 
 export type SelectedChat = {
     id?: string;
-    participants?: string;
-    type: 'existend' | 'inexistend';
-    receiver: string;
+    participants?: string[];
 }

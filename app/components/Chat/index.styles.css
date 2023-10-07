@@ -7,3 +7,9 @@
     background-color: rgb(201, 201, 201);
     border-radius: 0 !important;
 }
+
+.individual-chat-container .ant-collapse-header{ 
+    background-color: rgb(212, 212, 212) !important;
+    border-radius: 5px 5px 0 0!important;
+    width: 400px;
+}

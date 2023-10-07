@@ -1,6 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import axiosInstance, { SERVICE_BASE_URL } from '@/app/config/axios';
-import { CreateUserResponse, CreateUsersParams, EditUsersParams, User } from './user.types';
+import { CreateUserResponse, CreateUsersParams, EditUsersParams, User, FindAllUsersParams } from './user.types';
+import { MountQueryParamsParams } from '@/app/config/axios/query';
 
 const URL_CONTROLER = `${SERVICE_BASE_URL}/users`;
 
@@ -24,12 +25,12 @@ const usersService = {
     );
     return result.data;
   },
-  async findMany(params?: any){
+  async findMany(params: FindAllUsersParams){
+    const queryParams = MountQueryParamsParams({
+      params
+    })
     const result = await axiosInstance.get<User[]>(
-        `${URL_CONTROLER}`,
-        {
-            params
-        }
+        `${URL_CONTROLER}?${queryParams}`
     )
 
     return result.data

@@ -1,6 +1,7 @@
 import { useQueryClient, useMutation, useQuery } from 'react-query'
 import userServices from './user.services';
 import { useNotification } from '@/app/hooks'
+import { FindAllUsersParams } from './user.types';
 
 export function useCreateUsers(){
     const queryClient = useQueryClient();
@@ -46,7 +47,7 @@ export function useEditUsers(){
     return mutation
 }
 
-export function useListUsers(params?: any){
+export function useListUsers(params: FindAllUsersParams){
     const query = useQuery(['users', params], () => userServices.findMany(params))
     
     return query

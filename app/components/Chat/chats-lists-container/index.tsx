@@ -1,4 +1,4 @@
-import { Collapse, CollapseProps, Row, Tabs, TabsProps } from "antd";
+import { Collapse, CollapseProps, Row } from "antd";
 import { ChatListTabs } from "./chat-list-tabs";
 
 export function ChatListContainer(){

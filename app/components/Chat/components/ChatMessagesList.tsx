@@ -1,80 +1,74 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Button, List, Skeleton, message } from 'antd';
+import { Avatar, Button, List, Skeleton } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import './index.styles.css'
 import { socket } from '@/app/config/socket/socket.io';
 import { MessagesModel } from '@/app/domain/messages/messages.types';
-import { SelectedChat } from '..';
 import { useChatContext } from '@/app/context/chat';
-
-interface DataType {
-    gender?: string;
-    name: {
-      title?: string;
-      first?: string;
-      last?: string;
-    };
-    email?: string;
-    picture: {
-      large?: string;
-      medium?: string;
-      thumbnail?: string;
-    };
-    nat?: string;
-    loading: boolean;
-}
-
-const count = 3;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
-
-type Props = {
-  chat: SelectedChat | null;
-}
+import { useAuthContext } from '@/app/context/auth';
+import { useListUsers } from '@/app/domain/user/user.hook';
+import { format } from 'date-fns';
+import { useListMessages } from '@/app/domain/messages/messages.hook';
 
 export function ChatMessagesList(){
   const [initLoading, setInitLoading] = useState(false);
+  
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<MessagesModel[]>([]);
   const [list, setList] = useState<MessagesModel[]>([]);
 
   const { selectedChat } = useChatContext()
+  const { user } = useAuthContext()
 
-  useEffect(() => {
-    if(selectedChat?.id){
-      socket.emit('message_list', selectedChat?.id)
-    }
-  }, [selectedChat?.id])
-
-  
-  socket.on('message_list', (data: MessagesModel[]) => {
-    // setInitLoading(false);
-    setData(data)
-    setList(data)
+  const [searchParams, setSearchParams] = useState({
+    chatId: selectedChat?.id || '',
+    page: 1,
+    pageSize: 10
   })
 
-  const onLoadMore = () => {
-    setLoading(true);
-    // data.concat([...new Array(count)].map(() => ({ loading: true, name: {}, picture: {} }))),
-    setList(
-      data.concat([...new Array(count)].map(() => ({ 
-        content: '', 
-        contentType: '', 
-        '_id': '',
-        chatId: '',
-        senderId: ''
-      }))),
-    );
+  const chatUsers = useListUsers({
+    id: selectedChat?.participants || []
+  })
 
-    // fetch(fakeDataUrl)
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     const newData = data.concat(res.results);
-    //     setData(newData);
-    //     setList(newData);
-    //     setLoading(false);
-        
-    //     window.dispatchEvent(new Event('resize'));
-    //   });
+  const { data, isLoading } = useListMessages(searchParams)
+
+  useEffect(() => {
+    handleData()
+  }, [data])
+
+  
+  socket.on('message_list', (data: MessagesModel) => {
+    console.log(data, 'socket')
+    // setData(data)
+    setList([
+      data,
+      ...list
+    ])
+  })
+
+  const handleData = () => {
+    if(data){
+      setList([
+        ...list,
+        ...data.data
+      ])
+    }
+  }
+
+  const onLoadMore = () => {
+    setSearchParams({
+      ...searchParams,
+      page: searchParams.page + 1
+    })
+
+    // setList(
+    //   data.concat([...new Array(count)].map(() => ({ 
+    //     content: '', 
+    //     contentType: '', 
+    //     '_id': '',
+    //     chatId: '',
+    //     senderId: ''
+    //   }))),
+    // );
   };
 
   const loadMore =
@@ -94,15 +88,16 @@ export function ChatMessagesList(){
     return(
         <List
             className="demo-loadmore-list"
-            loading={initLoading}
+            loading={isLoading}
             itemLayout="horizontal"
-            // loadMore={loadMore}
+            loadMore={loadMore}
             dataSource={list}
             id='chat'
             renderItem={(item) => 
               item.contentType === 'audio' ? (
                 <div>
                   <audio controls src={item.content} />
+                  <div>{item.created_at && format(new Date(item.created_at), 'HH:mm')}</div>
                 </div>
               ) :
               (
@@ -114,8 +109,17 @@ export function ChatMessagesList(){
                       active
                     >
                     <List.Item.Meta
-                        avatar={<Avatar style={{background: 'gray'}} src={<UserOutlined />} />}
-                        description={item.content}
+                        avatar={
+                          <Avatar 
+                            src={chatUsers.data?.find(currUser => 
+                              currUser.id === item.senderId)?.avatar_url
+                            }
+                            icon={<UserOutlined />} 
+                          />
+                        }
+                        title={item.content}
+                        description={item.created_at && format(new Date(item.created_at), 'HH:mm')}
+                        className={`chat-message ${user?.id === item.senderId ? 'own-message' : ''}`}
                     />
                     </Skeleton>
                 </List.Item>

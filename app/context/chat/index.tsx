@@ -7,14 +7,10 @@ function ChatProvider(props: ChatProviderProps) {
     const [selectedChat, setSelectedChat] = useState<SelectedChat | null>(null)
 
     const handleSelectChat = ({
-        type,
         id,
         participants,
-        receiver
     }: SelectedChat) => {
         setSelectedChat({
-            receiver,
-            type,
             id,
             participants
         })

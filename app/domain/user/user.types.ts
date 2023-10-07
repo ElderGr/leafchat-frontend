@@ -13,3 +13,7 @@ export type CreateUsersParams = Omit<User, 'id' | 'updated_at' | 'create_at'>
 export type EditUsersParams = Omit<User, 'updated_at' | 'create_at'>
 
 export type CreateUserResponse = User
+
+export type FindAllUsersParams = {
+    id?: string[]
+}

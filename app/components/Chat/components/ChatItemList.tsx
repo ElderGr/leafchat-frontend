@@ -2,19 +2,27 @@ import { Avatar, Badge, Col, Row } from "antd";
 import { UserOutlined } from '@ant-design/icons';
 import './index.styles.css'
 import { ChatsModel } from "@/app/domain/chats/chats.types";
-import { useChatContext } from "@/app/context/chat";
+import { useListUsers } from "@/app/domain/user/user.hook";
+import { useAuthContext } from "@/app/context/auth";
+import { useEffect, useState } from "react";
+import { User } from "@/app/domain/user/user.types";
 
 type Props = {
     handleSelectChat(): void;
     active: boolean;
-    data: ChatsModel
+    chat?: ChatsModel
 }
 
 export function ChatItemList({
     handleSelectChat,
     active,
-    data
+    chat
 }: Props){
+    const { user } = useAuthContext()
+    const { data } = useListUsers({
+        id: chat ? chat.participants : []
+    })
+
     return (
         <Row 
             onClick={handleSelectChat} 
@@ -22,10 +30,13 @@ export function ChatItemList({
         >
             <Col span={2}>
                 <Avatar 
-                    icon={<UserOutlined />}
+                    src={data?.find(currUser => currUser.id !== user?.id)?.avatar_url}
+                    icon={<UserOutlined />} 
                 />
             </Col>
-            <Col offset={1} span={10}>{data.id}</Col>
+            <Col offset={1} span={10}>
+                {data?.map(currUser => currUser.id !== user?.id && currUser.name)}
+            </Col>
             <Col offset={9} span={1}>
                 <Badge count={2} />
             </Col>
