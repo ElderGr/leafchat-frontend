@@ -8,45 +8,67 @@ import { useChatContext } from '@/app/context/chat';
 import { useAuthContext } from '@/app/context/auth';
 import { useListUsers } from '@/app/domain/user/user.hook';
 import { format } from 'date-fns';
-
-const count = 3;
+import { useListMessages } from '@/app/domain/messages/messages.hook';
 
 export function ChatMessagesList(){
   const [initLoading, setInitLoading] = useState(false);
+  
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<MessagesModel[]>([]);
   const [list, setList] = useState<MessagesModel[]>([]);
 
   const { selectedChat } = useChatContext()
   const { user } = useAuthContext()
+
+  const [searchParams, setSearchParams] = useState({
+    chatId: selectedChat?.id || '',
+    page: 1,
+    pageSize: 10
+  })
+
   const chatUsers = useListUsers({
     id: selectedChat?.participants || []
   })
 
+  const { data, isLoading } = useListMessages(searchParams)
+
   useEffect(() => {
-    if(selectedChat?.id){
-      socket.emit('message_list', selectedChat?.id)
-    }
-  }, [selectedChat?.id])
+    handleData()
+  }, [data])
 
   
-  socket.on('message_list', (data: MessagesModel[]) => {
-    setData(data)
-    setList(data)
+  socket.on('message_list', (data: MessagesModel) => {
+    console.log(data, 'socket')
+    // setData(data)
+    setList([
+      data,
+      ...list
+    ])
   })
 
-  const onLoadMore = () => {
-    setLoading(true);
+  const handleData = () => {
+    if(data){
+      setList([
+        ...list,
+        ...data.data
+      ])
+    }
+  }
 
-    setList(
-      data.concat([...new Array(count)].map(() => ({ 
-        content: '', 
-        contentType: '', 
-        '_id': '',
-        chatId: '',
-        senderId: ''
-      }))),
-    );
+  const onLoadMore = () => {
+    setSearchParams({
+      ...searchParams,
+      page: searchParams.page + 1
+    })
+
+    // setList(
+    //   data.concat([...new Array(count)].map(() => ({ 
+    //     content: '', 
+    //     contentType: '', 
+    //     '_id': '',
+    //     chatId: '',
+    //     senderId: ''
+    //   }))),
+    // );
   };
 
   const loadMore =
@@ -66,15 +88,16 @@ export function ChatMessagesList(){
     return(
         <List
             className="demo-loadmore-list"
-            loading={initLoading}
+            loading={isLoading}
             itemLayout="horizontal"
-            // loadMore={loadMore}
+            loadMore={loadMore}
             dataSource={list}
             id='chat'
             renderItem={(item) => 
               item.contentType === 'audio' ? (
                 <div>
                   <audio controls src={item.content} />
+                  <div>{item.created_at && format(new Date(item.created_at), 'HH:mm')}</div>
                 </div>
               ) :
               (

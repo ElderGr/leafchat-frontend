@@ -78,13 +78,14 @@ export function ChatFooter({
     return (
         <Row
             style={{marginTop: '10px'}}
+            align='top'
         >
-            <Col style={{ display: 'flex', alignItems: 'center' }} span={1}>
-                <Popover 
-                    placement='leftBottom' 
-                    content={content}  
-                    trigger="click"
-                >
+              <Col span={1}>
+                  <Popover 
+                      placement='leftBottom' 
+                      content={content}  
+                      trigger="click"
+                  >
                     <Button htmlType='button' ghost shape='circle' type='text'>
                     <PlusOutlined />
                         </Button>
